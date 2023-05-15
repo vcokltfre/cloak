@@ -13,6 +13,8 @@ ormar = "^0.12.1"
 asyncpg = "^0.27.0"
 alembic = "^1.11.0"
 psycopg2-binary = "^2.9.6"
+fastapi = "^0.95.1"
+uvicorn = "^0.22.0"
 
 [tool.poetry.group.dev.dependencies]
 black = "^23.3.0"
@@ -24,11 +26,11 @@ format = "black . && isort --profile black ."
 
 db-migrate = "alembic revision --autogenerate -m"
 db-upgrade = "alembic upgrade head"
-start = "task db-upgrade && python3 -m src"
+start = "task db-upgrade && uvicorn src.api.__main__:app --reload --host 0.0.0.0 --port 8080"
 
 dev-db-migrate = "python3 scripts/env.py alembic revision --autogenerate -m"
 dev-db-upgrade = "python3 scripts/env.py alembic upgrade head"
-dev-start = "task dev-db-upgrade && python3 -m src"
+dev-start = "task dev-db-upgrade && uvicorn src.api.__main__:app --reload --host 127.0.0.1 --port 8080"
 
 [tool.black]
 line-length = 120

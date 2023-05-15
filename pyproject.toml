@@ -7,6 +7,12 @@ readme = "README.md"
 
 [tool.poetry.dependencies]
 python = "^3.10"
+python-dotenv = "^1.0.0"
+loguru = "^0.7.0"
+ormar = "^0.12.1"
+asyncpg = "^0.27.0"
+alembic = "^1.11.0"
+psycopg2-binary = "^2.9.6"
 
 [tool.poetry.group.dev.dependencies]
 black = "^23.3.0"
@@ -15,6 +21,14 @@ taskipy = "^1.10.4"
 
 [tool.taskipy.tasks]
 format = "black . && isort --profile black ."
+
+db-migrate = "alembic revision --autogenerate -m"
+db-upgrade = "alembic upgrade head"
+start = "task db-upgrade && python3 -m src"
+
+dev-db-migrate = "python3 scripts/env.py alembic revision --autogenerate -m"
+dev-db-upgrade = "python3 scripts/env.py alembic upgrade head"
+dev-start = "task dev-db-upgrade && python3 -m src"
 
 [tool.black]
 line-length = 120

@@ -1,6 +1,7 @@
-from .request import Request, State
+from .request import Request, State, User
 
 __all__ = (
     "Request",
     "State",
+    "User",
 )

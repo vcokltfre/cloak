@@ -10,8 +10,10 @@ load_dotenv()
 from src.core import Core
 from src.database import connect
 from src.request import User
+from src.utils import jwt_decode
 
 from .channels import router as channels_router
+from .login import router as login_router
 from .messages import router as messages_router
 from .nodes import router as nodes_router
 from .users import router as users_router
@@ -23,6 +25,7 @@ app = FastAPI(
 )
 
 app.include_router(channels_router)
+app.include_router(login_router)
 app.include_router(messages_router)
 app.include_router(nodes_router)
 app.include_router(users_router)
@@ -48,6 +51,7 @@ async def add_user_to_request(request: Request, call_next: Callable[..., Awaitab
     if request.url.path in [
         "/",
         "/openapi.json",
+        "/login",
     ]:
         return await call_next(request)
 
@@ -59,5 +63,11 @@ async def add_user_to_request(request: Request, call_next: Callable[..., Awaitab
         request.state.user = User(id=0, admin=True)
         return await call_next(request)
 
-    # TODO: Regular user auth
-    return Response(status_code=401)
+    try:
+        jwt = jwt_decode(auth)
+    except Exception:
+        return Response(status_code=401)
+
+    request.state.user = User(id=jwt.uid, admin=False)
+
+    return await call_next(request)

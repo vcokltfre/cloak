@@ -1,3 +1,7 @@
-from .core import Core
+from .core import Core, Exists, NotFound
 
-__all__ = ("Core",)
+__all__ = (
+    "Core",
+    "Exists",
+    "NotFound",
+)
